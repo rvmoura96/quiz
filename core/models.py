@@ -33,6 +33,7 @@ class Resposta(models.Model):
     resposta = models.CharField('Resposta', max_length=255)
     correta = models.BooleanField(default=False)
     pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE)
+    vezes_selecionada = models.PositiveIntegerField(default=0)
 
     def clean(self):
         """Valida o número máximo de respostas relacionadas a uma pergunta.
