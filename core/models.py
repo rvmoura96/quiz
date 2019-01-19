@@ -21,9 +21,7 @@ class Pergunta(models.Model):
         não será salva.
         """
         if self.questionario.pergunta_set.count() >= 10:
-            raise Exception(
-                f'{self.questionario.titulo} possuí o limite de 10 perguntas.'
-            )
+            raise Exception(f'{self.questionario.titulo} possuí o limite de 10 perguntas.')
 
     def __str__(self):
         return self.pergunta
@@ -43,9 +41,7 @@ class Resposta(models.Model):
         não será salva.
         """
         if self.pergunta.resposta_set.count() >= 4:
-            raise Exception(
-                f'{self.pergunta.pergunta} possuí o limite de 4 opções.'
-            )
+            raise Exception(f'{self.pergunta.pergunta} possuí o limite de 4 opções.')
 
     def __str__(self):
         return self.resposta
