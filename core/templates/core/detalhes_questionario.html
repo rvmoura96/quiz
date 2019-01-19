@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<section>
+    <div class="">
+        <h2>{{ questionario.titulo }} - Número de resposta: {{ questionario.numero_de_respotas }}</h2>
+        {% for pergunta in perguntas %}
+            {{ pergunta.pergunta }}
+        {% empty %}
+        <p>Ainda não há questionarios.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock content %}
