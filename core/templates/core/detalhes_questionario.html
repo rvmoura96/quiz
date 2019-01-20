@@ -1,12 +1,24 @@
 {% extends 'base.html' %}
+{% block title %} Detalhes do {{ questionario }} {% endblock title %}
 {% block content %}
 <section>
     <div class="">
         <h2>{{ questionario.titulo }} - Número de resposta: {{ questionario.numero_de_respotas }}</h2>
         {% for pergunta in perguntas %}
-            {{ pergunta.pergunta }}
+        <ul>
+            <li>Pergunta: {{ pergunta }}</li>
+
+            <ul>
+            {% for resposta in pergunta.respostas %}
+                <li>{{ resposta }} - Número de vezes escolhida: {{ resposta.vezes_selecionada }}</li>
+            {% empty %}
+                <li>Ainda não há respostas a essa pergunta.</li>
+            {% endfor %}
+            </ul>
+        </ul>
         {% empty %}
-        <p>Ainda não há questionarios.</p>
+        <li>Ainda não há questionarios.</li>
+
         {% endfor %}
     </div>
 </section>

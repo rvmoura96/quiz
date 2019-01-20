@@ -13,6 +13,10 @@ class Pergunta(models.Model):
     pergunta = models.CharField('Pergunta', max_length=255)
     questionario = models.ForeignKey(Questionario, on_delete=models.CASCADE)
 
+    def respostas(self):
+        """Restorna as repostas atreladas a esta pergunta."""
+        return Resposta.objects.filter(pergunta=self).distinct()
+
     def clean(self):
         """Valida o número máximo de perguntas relacionadas a um questionarios.
 
@@ -20,11 +24,12 @@ class Pergunta(models.Model):
         perguntas relacionadas a ele >= 10, a instância de pergunta em questão
         não será salva.
         """
-        if self.questionario.pergunta_set.count() >= 10:
-            raise Exception(f'{self.questionario.titulo} possuí o limite de 10 perguntas.')
+        if self.questionario.pergunta_set.exclude(pergunta=self).count() >= 10:
+            raise Exception(f'{self.questionario} possuí o limite de 10 perguntas.')
 
     def __str__(self):
         return self.pergunta
+
 
 
 class Resposta(models.Model):
@@ -40,8 +45,8 @@ class Resposta(models.Model):
         respostas relacionadas a ele >= 4, a instância de resposta em questão
         não será salva.
         """
-        if self.pergunta.resposta_set.count() >= 4:
-            raise Exception(f'{self.pergunta.pergunta} possuí o limite de 4 opções.')
+        if self.pergunta.resposta_set.exclude(resposta=self).count() >= 4:
+            raise Exception(f'{self.pergunta} possuí o limite de 4 opções.')
 
     def __str__(self):
         return self.resposta
