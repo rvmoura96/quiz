@@ -32,6 +32,7 @@
                       categories: {{ pergunta.lista_das_respostas|safe }}
                   },
                   series: [{
+                      name: 'Vezes escolhida',
                       data: {{ pergunta.contagem_das_respostas|safe }}
                   }]
               });
