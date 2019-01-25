@@ -17,6 +17,33 @@ class Pergunta(models.Model):
         """Restorna as repostas atreladas a esta pergunta."""
         return Resposta.objects.filter(pergunta=self).distinct()
 
+    def lista_das_respostas(self):
+        """Retorna uma lista contendo o valor de cada resposta.
+
+        Retorna uma lista contendo o valor de cada resposta relacionada a
+        pergunta instanciada.
+        """
+        respostas = Resposta.objects.filter(pergunta=self).distinct()
+        lista_das_respostas = [
+            resposta.resposta for resposta in respostas
+        ]
+
+        return lista_das_respostas
+
+    def contagem_das_respostas(self):
+        """Retorna uma lista contendo o número de vezes de cada resposta.
+
+        Retorna uma lista contendo o valor do número de vezes que cada resposta
+        foi selecionada pergunta instanciada.
+        """
+        respostas = Resposta.objects.filter(pergunta=self).distinct()
+        lista_das_contagens = [
+            resposta.vezes_selecionada for resposta in respostas
+        ]
+
+        return lista_das_contagens
+
+
     def clean(self):
         """Valida o número máximo de perguntas relacionadas a um questionarios.
 

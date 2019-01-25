@@ -1,25 +1,48 @@
 {% extends 'base.html' %}
 {% block title %} Detalhes do {{ questionario }} {% endblock title %}
 {% block content %}
-<section>
-    <div class="">
         <h2>{{ questionario.titulo }} - Número de resposta: {{ questionario.numero_de_respotas }}</h2>
         {% for pergunta in perguntas %}
-        <ul>
-            <li>Pergunta: {{ pergunta }}</li>
-
-            <ul>
-            {% for resposta in pergunta.respostas %}
-                <li>{{ resposta }} - Número de vezes escolhida: {{ resposta.vezes_selecionada }}</li>
-            {% empty %}
-                <li>Ainda não há respostas a essa pergunta.</li>
-            {% endfor %}
-            </ul>
-        </ul>
+        <div class="accordion" id="accordionExample">
+          <div class="card">
+            <div class="card-header" id="headingOne">
+              <h2 class="mb-0">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne{{ pergunta.id }}" aria-controls="collapseOne">
+                 {{ pergunta }}
+                </button>
+              </h2>
+            </div>
+          </div>
+        </div>
+        {% for resposta in pergunta.respostas %}
+        <div id="collapseOne{{ pergunta.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                  <p>{{ resposta }} - Número de Respostas:  {{ resposta.vezes_selecionada }}</p>
+                  <script>
+                  Highcharts.chart('container'+'{{pergunta.id}}', {
+                      chart: {
+                          type: 'column'
+                      },
+                      title: {
+                          text: '{{pergunta}}'  // pergunta
+                      },
+                      xAxis: {
+                          categories: {{ pergunta.lista_das_respostas|safe }}
+                      },
+                      series: [{
+                          data: {{ pergunta.contagem_das_respostas|safe }}
+                      }]
+                  });
+                  </script>
+                  <div id="container{{pergunta.id}}"></div>
+              {% empty %}
+              <p>Ainda não há respostas a essa pergunta.</p>
+        </div>
+        {% endfor %}
         {% empty %}
-        <li>Ainda não há questionarios.</li>
+        Ainda não há perguntas a este questionário.
 
         {% endfor %}
-    </div>
-</section>
+
+
+
 {% endblock content %}
