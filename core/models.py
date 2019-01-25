@@ -24,8 +24,10 @@ class Pergunta(models.Model):
         perguntas relacionadas a ele >= 10, a instância de pergunta em questão
         não será salva.
         """
-        if self.questionario.pergunta_set.exclude(pergunta=self).count() >= 10:
-            raise Exception(f'{self.questionario} possuí o limite de 10 perguntas.')
+        if self.questionario.pergunta_set.exclude(pk=self.pk).count() >= 10:
+            raise Exception(
+                f'{self.questionario} possuí o limite de 10 perguntas.'
+            )
 
     def __str__(self):
         return self.pergunta
@@ -45,8 +47,10 @@ class Resposta(models.Model):
         respostas relacionadas a ele >= 4, a instância de resposta em questão
         não será salva.
         """
-        if self.pergunta.resposta_set.exclude(resposta=self).count() >= 4:
-            raise Exception(f'{self.pergunta} possuí o limite de 4 opções.')
+        if self.pergunta.resposta_set.exclude(pk=self.pk).count() >= 4:
+            raise Exception(
+                f'{self.pergunta} possuí o limite de 4 opções.'
+            )
 
     def __str__(self):
         return self.resposta
