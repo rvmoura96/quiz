@@ -21,6 +21,7 @@
           <form action="{% url 'envio-email' %}" method="post">
               {% csrf_token %}
               {{ formulario }}
+              <input type="hidden" name="questionario" value="{{ questionario.id }}">
               <button type="submit" class="btn btn-primary">Save changes</button>
           </form>
       </div>
