@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.core.files.storage import FileSystemStorage
+from django.utils.text import slugify
 
 from weasyprint import HTML
 
@@ -26,6 +27,8 @@ def detalhes_questionario(request, id):
 
 def detalhes_em_pdf(request, id):
     questionario = Questionario.objects.get(id=id)
+    titulo = questionario.titulo
+    titulo_formatado = slugify(titulo)
     perguntas = Pergunta.objects.filter(questionario=questionario).distinct()
     context = {
         'questionario': questionario,
@@ -33,12 +36,12 @@ def detalhes_em_pdf(request, id):
     }
     html_string = render_to_string('core/template_pdf.html', context)
     html = HTML(string=html_string)
-    html.write_pdf(target='/tmp/mypdf.pdf')
+    html.write_pdf(target='/tmp/detalhes-{}.pdf'.format(titulo_formatado))
 
     fs = FileSystemStorage('/tmp')
-    with fs.open('mypdf.pdf') as pdf:
+    with fs.open(f'mypdf.pdf') as pdf:
         response = HttpResponse(pdf, content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+        response['Content-Disposition'] = 'attachment; filename="detalhes-{}.pdf"'.format(titulo_formatado)
         return response
 
     return response
