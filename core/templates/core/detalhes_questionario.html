@@ -4,14 +4,39 @@
 <h2>
     {{ questionario.titulo }} - Número de resposta: {{ questionario.numero_de_respotas }}
     <a class="btn btn-primary" href="{% url 'pdf-questionario' id=questionario.id%}">pdf</a>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+        Launch demo modal
+    </button>
 </h2>
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form action="{% url 'envio-email' %}" method="post">
+              {% csrf_token %}
+              {{ formulario }}
+              <button type="submit" class="btn btn-primary">Save changes</button>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
     {% for pergunta in perguntas %}
     <div class="accordion" id="accordionExample">
       <div class="card">
         <div class="card-header" id="headingOne">
           <h2 class="mb-0">
             <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#accordion{{ pergunta.id }}" aria-controls="collapseOne">
-             {{ pergunta }}
+             {{ pergunta }} {% if pergunta.respostas %}- Mais selecionado - {{ pergunta.mais_escolhida }} {% endif %}
             </button>
           </h2>
         </div>
@@ -19,7 +44,6 @@
     </div>
     {% for resposta in pergunta.respostas %}
     <div id="accordion{{ pergunta.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-              <p>{{ resposta }} - Número de Respostas:  {{ resposta.vezes_selecionada }}</p>
               <script>
               Highcharts.chart('container'+'{{pergunta.id}}', {
                   chart: {
@@ -38,6 +62,7 @@
               });
               </script>
               <div id="container{{pergunta.id}}"></div>
+              <p>{{ resposta }} - Número de Respostas:  {{ resposta.vezes_selecionada }}</p>
           {% empty %}
           <p>Ainda não há respostas a essa pergunta.</p>
     </div>

@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.db.models import Max
 
 class Questionario(models.Model):
     titulo = models.CharField('Titulo', max_length=255)
@@ -12,6 +12,13 @@ class Questionario(models.Model):
 class Pergunta(models.Model):
     pergunta = models.CharField('Pergunta', max_length=255)
     questionario = models.ForeignKey(Questionario, on_delete=models.CASCADE)
+
+    def mais_escolhida(self):
+        resposta = Resposta.objects.filter(
+            pergunta=self
+            ).latest('vezes_selecionada')
+
+        return resposta
 
     def respostas(self):
         """Restorna as repostas atreladas a esta pergunta."""
@@ -43,7 +50,6 @@ class Pergunta(models.Model):
 
         return lista_das_contagens
 
-
     def clean(self):
         """Valida o número máximo de perguntas relacionadas a um questionarios.
 
@@ -58,7 +64,6 @@ class Pergunta(models.Model):
 
     def __str__(self):
         return self.pergunta
-
 
 
 class Resposta(models.Model):
@@ -81,3 +86,7 @@ class Resposta(models.Model):
 
     def __str__(self):
         return self.resposta
+
+
+class Email(models.Model):
+    email = models.EmailField()

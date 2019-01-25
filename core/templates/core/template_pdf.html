@@ -5,7 +5,7 @@
         <div class="card-header" id="headingOne">
           <h2 class="mb-0">
             <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#accordion{{ pergunta.id }}" aria-controls="collapseOne">
-             {{ pergunta }}
+             {{ pergunta }} {% if pergunta.respostas %}- mais escolhida - {{ pergunta.mais_escolhida }} {% endif %}
             </button>
           </h2>
         </div>
@@ -14,23 +14,6 @@
     {% for resposta in pergunta.respostas %}
     <div id="accordion{{ pergunta.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
               <p>{{ resposta }} - Número de Respostas:  {{ resposta.vezes_selecionada }}</p>
-              <script>
-              Highcharts.chart('container'+'{{pergunta.id}}', {
-                  chart: {
-                      type: 'column'
-                  },
-                  title: {
-                      text: '{{pergunta}}'  // pergunta
-                  },
-                  xAxis: {
-                      categories: {{ pergunta.lista_das_respostas|safe }}
-                  },
-                  series: [{
-                      data: {{ pergunta.contagem_das_respostas|safe }}
-                  }]
-              });
-              </script>
-              <div id="container{{pergunta.id}}"></div>
           {% empty %}
           <p>Ainda não há respostas a essa pergunta.</p>
     </div>
@@ -38,3 +21,6 @@
     {% empty %}
     Ainda não há perguntas a este questionário.
     {% endfor %}
+
+
+<h3>Para mais informações visualize a versão web.</h3>

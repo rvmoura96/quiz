@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.core.files.storage import FileSystemStorage
 from django.utils.text import slugify
@@ -7,7 +7,7 @@ from django.utils.text import slugify
 from weasyprint import HTML
 
 from core.models import Questionario, Pergunta
-
+from core.forms import EmailForm
 
 def home(request):
     questionarios = Questionario.objects.filter(pergunta__isnull=False).distinct()
@@ -18,12 +18,20 @@ def home(request):
 def detalhes_questionario(request, id):
     questionario = Questionario.objects.get(id=id)
     perguntas = Pergunta.objects.filter(questionario=questionario).distinct()
+    form = EmailForm()
     context = {
         'questionario': questionario,
         'perguntas': perguntas,
+        'formulario': form
     }
     return render(request, 'core/detalhes_questionario.html', context)
 
+
+def envio_email(request):
+    if request.method == 'POST':
+        form = EmailForm(request.POST)
+        if form.is_valid():
+            return HttpResponseRedirect('/')
 
 def detalhes_em_pdf(request, id):
     questionario = Questionario.objects.get(id=id)
@@ -39,7 +47,7 @@ def detalhes_em_pdf(request, id):
     html.write_pdf(target='/tmp/detalhes-{}.pdf'.format(titulo_formatado))
 
     fs = FileSystemStorage('/tmp')
-    with fs.open(f'mypdf.pdf') as pdf:
+    with fs.open('detalhes-{}.pdf'.format(titulo_formatado)) as pdf:
         response = HttpResponse(pdf, content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="detalhes-{}.pdf"'.format(titulo_formatado)
         return response
