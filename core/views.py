@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-# Create your views here.
+from django.template.loader import render_to_string
+from django.core.files.storage import FileSystemStorage
+
+from weasyprint import HTML
 
 from core.models import Questionario, Pergunta
 
@@ -19,3 +22,23 @@ def detalhes_questionario(request, id):
         'perguntas': perguntas,
     }
     return render(request, 'core/detalhes_questionario.html', context)
+
+
+def detalhes_em_pdf(request, id):
+    questionario = Questionario.objects.get(id=id)
+    perguntas = Pergunta.objects.filter(questionario=questionario).distinct()
+    context = {
+        'questionario': questionario,
+        'perguntas': perguntas,
+    }
+    html_string = render_to_string('core/template_pdf.html', context)
+    html = HTML(string=html_string)
+    html.write_pdf(target='/tmp/mypdf.pdf')
+
+    fs = FileSystemStorage('/tmp')
+    with fs.open('mypdf.pdf') as pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+        return response
+
+    return response

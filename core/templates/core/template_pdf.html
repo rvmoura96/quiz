@@ -1,7 +1,4 @@
-{% extends 'base.html' %}
-{% block title %} Detalhes do {{ questionario }} {% endblock title %}
-{% block content %}
-<h2>{{ questionario.titulo }} - Número de resposta: {{ questionario.numero_de_respotas }}</h2> <a href="{% url 'pdf-questionario' id=questionario.id%}">pdf</a>
+<h2>{{ questionario.titulo }} - Número de resposta: {{ questionario.numero_de_respotas }}</h2>
     {% for pergunta in perguntas %}
     <div class="accordion" id="accordionExample">
       <div class="card">
@@ -41,4 +38,3 @@
     {% empty %}
     Ainda não há perguntas a este questionário.
     {% endfor %}
-{% endblock content %}
